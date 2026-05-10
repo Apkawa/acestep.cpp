@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { parse as yamlParse } from 'yaml';
 	import { RotateCcw, Download, FolderOpen, X } from '@lucide/svelte';
 	import { app, toast, setRequest } from '../lib/state.svelte.js';
 	import { rollDice } from '../lib/dice.js';
@@ -207,7 +208,10 @@
 	}
 
 	function exportJson() {
-		const json = JSON.stringify(buildRequest(), null, 2);
+		const rq = buildRequest();
+		rq.name = app.name;
+		const json = JSON.stringify(rq, null, 2);
+
 		const blob = new Blob([json], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
@@ -236,13 +240,30 @@
 			file
 				.text()
 				.then((text) => {
-					setRequest(JSON.parse(text) as AceRequest);
-					app.name = file.name.replace(/\.json$/i, '') || 'Imported';
+					const request = JSON.parse(text) as AceRequest;
+					setRequest(request);
+					app.name = request.name || file.name.replace(/\.json$/i, '') || 'Imported';
 					app.pendingRequests = [];
 					app.pendingIndex = 0;
 				})
 				.catch(() => {
 					toast('Invalid JSON file');
+				});
+			return;
+		}
+
+		if (ext === 'yml' || ext === 'yaml') {
+			file
+				.text()
+				.then((text) => {
+					const request = yamlParse(text) as AceRequest;
+					setRequest(request);
+					app.name = request.name || file.name.replace(/\.json$/i, '') || 'Imported';
+					app.pendingRequests = [];
+					app.pendingIndex = 0;
+				})
+				.catch(() => {
+					toast('Invalid YAML file');
 				});
 			return;
 		}
@@ -535,14 +556,16 @@
 <form class="request-form" onsubmit={(e) => e.preventDefault()}>
 	<input
 		type="file"
-		accept=".json,.mp3,.wav,.vae"
+		accept=".json,.yml,.yaml,.mp3,.wav,.vae"
 		bind:this={fileInput}
 		onchange={onFileSelected}
 		hidden
 	/>
 	<div class="toolbar">
-		<button type="button" onclick={importJson} title="Open JSON prompt, MP3, WAV or VAE latents"
-			><FolderOpen size={14} /> Open</button
+		<button
+			type="button"
+			onclick={importJson}
+			title="Open JSON/YAML prompt, MP3, WAV or VAE latents"><FolderOpen size={14} /> Open</button
 		>
 		<button type="button" onclick={exportJson} title="Save JSON prompt"
 			><Download size={14} /> Save</button

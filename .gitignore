@@ -4,8 +4,10 @@ build/
 
 tests/*/
 
+.cache/
 checkpoints/
 models/*.gguf
+models/*.safetensors
 adapters/*/
 adapters/*.safetensors
 __pycache__/

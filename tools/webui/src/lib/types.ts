@@ -1,6 +1,7 @@
 // mirrors AceRequest from request.h
 // all fields optional except caption: empty/unset = server applies default
 export interface AceRequest {
+	name?: string;
 	caption: string;
 	lyrics?: string;
 	audio_codes?: string;
