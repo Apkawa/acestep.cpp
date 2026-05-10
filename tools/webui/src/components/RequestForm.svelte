@@ -258,7 +258,7 @@
 				.then((text) => {
 					const request = yamlParse(text) as AceRequest;
 					setRequest(request);
-					app.name = request.name || file.name.replace(/\.json$/i, '') || 'Imported';
+					app.name = request.name || file.name.replace(/\.(ya?ml)$/i, '') || 'Imported';
 					app.pendingRequests = [];
 					app.pendingIndex = 0;
 				})
