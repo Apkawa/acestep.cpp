@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import DialogButton from './DialogButton.svelte';
 
 	let {
 		open = $bindable(false),
@@ -59,8 +60,8 @@
 				{#if actions}
 					{@render actions(cancel)}
 				{:else}
-					<button type="button" class="dialog-btn" onclick={cancel}>Cancel</button>
-					<button type="button" class="dialog-btn" onclick={confirm}>OK</button>
+					<DialogButton onclick={cancel}>Cancel</DialogButton>
+					<DialogButton onclick={confirm}>OK</DialogButton>
 				{/if}
 			</div>
 		</div>
@@ -99,22 +100,5 @@
 		display: flex;
 		justify-content: flex-end;
 		gap: 0.4rem;
-	}
-	/* Global so the actions snippet, authored in the parent component,
-	   reuses the exact same button look without duplicating styles.
-	   Doubled class selector raises specificity to 0,0,2,0 so the rule
-	   wins over a scoped `button { ... }` in the parent (which Svelte
-	   compiles to `button.svelte-HASH`, specificity 0,0,1,1). */
-	:global(.dialog-btn.dialog-btn) {
-		background: var(--bg-btn);
-		border: none;
-		cursor: pointer;
-		padding: 0.2rem 0.6rem;
-		color: var(--fg);
-		font-size: 0.8rem;
-		border-radius: 3px;
-	}
-	:global(.dialog-btn.dialog-btn:hover) {
-		background: var(--bg-btn-hover);
 	}
 </style>

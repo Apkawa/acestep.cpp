@@ -44,6 +44,7 @@
 	} from '../lib/fields.js';
 	import type { AceRequest, Song } from '../lib/types.js';
 	import Dialog from './Dialog.svelte';
+	import DialogButton from './DialogButton.svelte';
 
 	let busyLm = $state(false);
 	let busySynth = $state(false);
@@ -1120,22 +1121,18 @@
 
 <Dialog bind:open={saveFormatOpen} title="Save format">
 	{#snippet actions(close)}
-		<button type="button" class="dialog-btn" onclick={close}>Cancel</button>
-		<button
-			type="button"
-			class="dialog-btn"
+		<DialogButton onclick={close}>Cancel</DialogButton>
+		<DialogButton
 			onclick={() => {
 				saveAs('json');
 				close();
-			}}>JSON</button
+			}}>JSON</DialogButton
 		>
-		<button
-			type="button"
-			class="dialog-btn"
+		<DialogButton
 			onclick={() => {
 				saveAs('yaml');
 				close();
-			}}>YAML</button
+			}}>YAML</DialogButton
 		>
 	{/snippet}
 </Dialog>
